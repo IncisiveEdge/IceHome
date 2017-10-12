@@ -1,0 +1,72 @@
+doctype html
+html
+  head
+    title #{title} - ICE创客基地
+    link(rel='stylesheet', href='/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    style.
+      html,body{
+        overflow-x: hidden;
+      }
+      .navbar{
+        border-radius: 0;
+      }
+
+  body
+    nav.navbar.navbar-inverse(role="navigation" style="margin-bottom:0")
+      div.container-fluid
+        div.navbar-header
+          button.navbar-toggle(type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse")
+            span.sr-only  切换导航
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href="/") Logo ICE创客基地
+        div.navbar-collapse#navbar-collapse
+          ul.nav.navbar-nav
+            li.active
+              a(href="/") 首页
+            li
+              a(href="#") 新闻资讯
+            li
+              a(href="#") 课程体系
+            li
+              a(href="#") 营地赛事
+            li
+              a(href="#") 产品教具
+            li
+              a(href="#") 关于ICE
+            li.dropdown
+              a.dropdown-toggle(href="#" data-toggle="dropdown") 预约联系 <b class="caret"></b>
+              ul.dropdown-menu
+                li
+                  a(href="#") 预约
+                li
+                  a(href="#") 报名
+                li
+                  a(href="#") 加盟咨询
+                li
+                  a(href="#") 公众号
+    div.container
+      if errors && errors.length
+        div.alert.alert-danger #{errors}
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+      if infos && infos.length
+        div.alert.alert-info #{infos}
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+
+    divr#container
+      if user
+        form.well.form-inline.center(method="post",action="/post",style="text-align:center;display:flex")
+          textarea.form-control(name="post",placeholder="用户 " + user.name + " 说：",style="width: 100%;height:70px;")
+          !{'&nbsp;'}
+          button.btn.btn-success(type="submit") 发言
+      block content
+    hr
+    footer
+      p
+        a(href="#" target="_blank") Caro  2017
+    script(src="/javascripts/jquery.min.js")
+    script(src="/javascripts/bootstrap.min.js")
+
+

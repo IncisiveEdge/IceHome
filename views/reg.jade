@@ -1,0 +1,26 @@
+extends layout
+
+block content
+    form.form-horizontal(role="form",method="post",style="width:40%")
+        div.form-group
+            label.col-md-2.control-label(for="username") 用户名
+            div.col-md-10
+                input.form-control#username(type="text",name="username")
+                p.help-block    你的账户名称，用于登录和显示
+        div.form-group
+            label.col-md-2.control-label(for="password") 密码
+            div.col-md-10
+                input.form-control#password(type="password",name="password")
+
+
+        div.form-group
+            label.col-md-2.control-label(for="password-repeat") 重新输入密码
+            div.col-md-10
+                input.form-control#password-repeat(type="password",name="password-repeat")
+
+        div.form-group.form-actions
+            div.col-md-offset-2.col-md-2
+                button.btn.btn-primary(type="submit")   注册
+            div.col-md-8
+                span(style="color:red")   #{errors}
+

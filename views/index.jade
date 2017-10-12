@@ -1,0 +1,60 @@
+extends layout
+
+block content
+  div#carousel-example-generic.carousel.slide(data-ride="carousel")
+      <!-- Indicators -->
+      ol.carousel-indicators
+          li.active(data-target="#carousel-example-generic" data-slide-to="0")
+          li(data-target="#carousel-example-generic" data-slide-to="1")
+          li(data-target="#carousel-example-generic" data-slide-to="2")
+          li(data-target="#carousel-example-generic" data-slide-to="3")
+          li(data-target="#carousel-example-generic" data-slide-to="4")
+
+      <!-- Wrapper for slides -->
+      div.carousel-inner(role="listbox")
+          div.item.active
+              img(src="images/demo/demo1.jpg" alt="...")
+              div.carousel-caption
+                  h3 测试1
+                  p sub1
+          div.item
+              img(src="images/demo/demo2.jpg" alt="...")
+              div.carousel-caption
+                  h3 测试2
+                  p sub2
+          div.item
+              img(src="images/demo/demo3.jpg" alt="...")
+              div.carousel-caption
+                  h3 测试3
+                  p sub3
+          div.item
+              img(src="images/demo/demo4.jpg" alt="...")
+              div.carousel-caption
+                  h3 测试4
+                  p sub4
+          div.item
+              img(src="images/demo/demo5.jpg" alt="...")
+              div.carousel-caption
+                  h3 测试5
+                  p sub5
+
+      <!-- Controls -->
+      a.left.carousel-control(href="#carousel-example-generic" role="button" data-slide="prev")
+          span.glyphicon.glyphicon-chevron-left(aria-hidden="true")
+          span.sr-only Previous
+      a.right.carousel-control(href="#carousel-example-generic" role="button" data-slide="next")
+          span.glyphicon.glyphicon-chevron-right(aria-hidden="true")
+          span.sr-only Next
+
+  div.container(style="display:flex;flex-wrap:wrap")
+    each post in posts
+      div(style="width:33.3%;padding:20px 10px")
+        h2 #{post.user} 说
+        p
+          i #{post.time}
+        p
+          strong #{post.post}
+
+
+
+
