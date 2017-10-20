@@ -12,7 +12,6 @@ router.get('/', function(req, res, next) {
       req.flash('error',err);
       return res.render('index', { title: 'Express' ,posts:[]});
     }
-    console.log(posts)
     res.render('index', { title: 'Express' ,posts:posts})
 
   })
@@ -45,7 +44,6 @@ router.post('/post', checkLogin);
 router.post('/post', function(req, res, next){
   var currentUser = req.session.user;
   var post = new Post(currentUser.name, req.body.post);
-  console.log(post);
   post.save(function(err){
     if (err){
       req.flash('error', err);
@@ -128,7 +126,6 @@ router.post('/login', function(req, res, next){
         return res.redirect('/login');
       }
       req.session.user = user[0];
-      console.log(req.session)
       req.flash('info','登陆成功');
       res.redirect('/');
     }else{

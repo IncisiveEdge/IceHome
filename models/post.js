@@ -25,6 +25,14 @@ Post.prototype.save = function save(callback){
   })
 }
 
+Post.getTpl = function getTpl(callback){
+  database(function(connection){
+    connection.query('SELECT * FROM posttpl', null, function(err,result){
+      callback(err,result);
+    })
+  })
+}
+
 Post.get = function get(username, callback){
   if(!username){
     database(function(connection){

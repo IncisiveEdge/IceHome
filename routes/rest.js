@@ -10,14 +10,14 @@ router.get('/getPostAll', function(req, res, next) {
   Post.get('',function(err,posts){
     if(err){
       req.flash('error',err);
-      return throwException(err);
+      return throwException(res, err);
     }
-    res.json(posts);
+    return response(res, posts);
   })
 });
 
 router.get('/getSessionUser', function(req, res, next) {
-  res.json(req.session.user);
+  return response(res, req.session.user || null);
 });
 
 router.get('/getPost', checkLogin);
@@ -31,16 +31,29 @@ router.get('/getPost',function(req, res, next){
       Post.get(user.name,function(err, posts){
         if(err){
           req.flash('error',err);
-          return throwException(err);
+          return throwException(res, err);
         }
-        res.json(posts);
+        return response(res, posts)
       })
     }else{
       req.flash('error','用户不存在');
-      return throwException(err);
+      return throwException(res, err);
     }
 
   })
+})
+
+router.get('/getPostTpl', checkLogin);
+router.get('/getPostTpl',function(req, res, next){
+
+  Post.getTpl(function(err, tpl){
+    if(err){
+      req.flash('error',err);
+      return throwException(res, err);
+    }
+    return response(res, tpl)
+  })
+
 })
 
 router.post('/post', checkLogin);
@@ -51,10 +64,10 @@ router.post('/post', function(req, res, next){
   post.save(function(err){
     if (err){
       req.flash('error', err);
-      return throwException(err)
+      return throwException(res, err)
     }
+    return response(res, true)
     req.flash('info', '发表成功');
-    res.json(true);
   });
 })
 
@@ -67,15 +80,15 @@ router.post('/reg', checkNotLogin);
 router.post('/reg', function(req, res, next){
   if(!req.body['username']){
     req.flash('error','用户名不能为空');
-    return throwException('用户名不能为空');
+    return throwException(res, '用户名不能为空');
   }
   if(!req.body['password']){
     req.flash('error','密码不能为空');
-    return throwException('密码不能为空');
+    return throwException(res, '密码不能为空');
   }
   if(req.body['password-repeat'] !== req.body['password']) {
     req.flash('error','两次输入的口令不一致');
-    return throwException('两次输入的口令不一致');
+    return throwException(res, '两次输入的口令不一致');
   }
 
   var md5 = crypto.createHash('md5');
@@ -91,7 +104,7 @@ router.post('/reg', function(req, res, next){
     }
     if(err) {
       req.flash('error', err);
-      return throwException(err);
+      return throwException(res, err);
       // res.send(err);
       // return res.redirect('/reg');
     }
@@ -99,9 +112,10 @@ router.post('/reg', function(req, res, next){
     newUser.save(function(err){
       if(err){
         req.flash('error',err);
-        return throwException(err);
+        return throwException(res, err);
       }
       req.session.user = newUser;
+      return response(res, req.session.user)
       req.flash('info','恭喜用户 '+newUser.name + ', 注册成功');
 
     });
@@ -126,13 +140,15 @@ router.post('/login', function(req, res, next){
     if(user && user.length){
       if(user[0].password !== newUser.password){
         req.flash('error', '密码错误');
-        return throwException('密码错误');
+        return throwException(res, '用户名或密码错误！');
       }
       req.session.user = user[0];
+      var user = req.session.user;
+      return response(res, req.session.user, '登陆成功')
       req.flash('info','登陆成功');
     }else{
       req.flash('error', '用户不存在');
-      return throwException("用户不存在");
+      return throwException(res, "用户名或密码错误！");
     }
   })
 
@@ -140,15 +156,16 @@ router.post('/login', function(req, res, next){
 router.get('/logout', checkLogin);
 router.get('/logout', function(req, res, next){
   req.session.user = null;
-  res.json('用户已注销');
+  return response(res, true, '用户已注销')
+  // res.json('用户已注销');
 
 })
 
 
 function checkNotLogin(req, res, next){
   if(req.session.user){
-    req.flash('error', '用户已登录');
-    return throwException('用户已登录');
+    req.flash('error', req.session.user.name + '用户已登录');
+    return throwException(res, req.session.user.name + '用户已登录，请先注销');
   }
   next();
 }
@@ -156,15 +173,23 @@ function checkNotLogin(req, res, next){
 function checkLogin(req, res, next){
   if(!req.session.user){
     req.flash('error', '用户未登录');
-    return throwException('用户未登录');
+    return throwException(res, '用户未登录');
   }
   next();
 }
 
-function throwException (message, error){
+function throwException (res, message){
   console.error(message);
-  res.json(message);
-  // res.status(500).send(JSON.stringify((message)));
+  return response(res, false, message, false)
+}
+
+function response (res, data, message, status){
+  status = status !== undefined ? status : true
+  var response = {};
+  response.body = data !== undefined ? data : false;
+  response.header = {status: status}
+  response.header.message = message
+  res.json(response);
 }
 
 module.exports = router;
